@@ -1,0 +1,79 @@
+﻿@page "/personsPage"
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4">
+            <h5>Имя</h5>
+            <input class="form-control" placeholder="Имя" @bind="firstName"/>
+        </div>
+        <div class="col-4">
+            <h5>Фамилия</h5>
+            <input class="form-control" placeholder="Фамилия" @bind="secondName"/>
+        </div>
+        <div class="col-4">
+            <h5>Email</h5>
+            <input class="form-control" type="email" placeholder="Email" @bind="email"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Test</h3>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Фамилия</th>
+                        <th scope="col">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in personLists)
+                    {
+
+                    <tr>
+                        <td>
+                            @item.ID
+                        </td>
+                        <td>
+                            @item.FirstName
+                        </td>
+                        <td>
+                            @item.SecondName
+                        </td>
+                        <td>
+                            @item.Email
+                        </td>
+                    </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private IList<Person> personLists = new List<Person>();
+    private string firstName;
+    private string secondName;
+    private string email;
+
+    private void AddPerson()
+    {
+        if(!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email))
+        {
+            personLists.Add(new Person { FirstName = firstName, SecondName = secondName, Email = email });
+            firstName = string.Empty;
+            secondName = string.Empty;
+            email = string.Empty;
+            
+        }
+    }
+}
