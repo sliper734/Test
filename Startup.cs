@@ -32,8 +32,8 @@ namespace Test
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddDbContextPool<MySqlDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc();
+            //services.AddDbContextPool<MySqlDbContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

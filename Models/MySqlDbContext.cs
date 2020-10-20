@@ -12,8 +12,7 @@ namespace Test.Models
 
         public MySqlDbContext()
         {
-            //Database.EnsureDeleted();   
-            //Database.EnsureCreated();
+            //Database.Migrate();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
