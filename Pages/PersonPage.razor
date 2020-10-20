@@ -2,25 +2,64 @@
 
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-4">
-            <h5>Имя</h5>
-            <input class="form-control" placeholder="Имя" @bind="firstName"/>
+    <form class="was-validated">
+        <div class="row">
+            <div class="col-3 custom-control">
+                <label for="fname">Имя</label>
+                <input class="form-control" type="text" id="fname" placeholder="Имя" @bind="firstName" required />
+                <div class="valid-feedback" @key="fvalid=true">
+                    Отлично!
+                    @fvalid
+                </div>
+                <div class="invalid-feedback" @key="fvalid=false">
+                    Заполните поле!
+                    @fvalid
+                </div>
+
+            </div>
+            <div class="col-3 custom-control">
+                <label for="sname">Фамилия</label>
+                <input class="form-control" type="text" placeholder="Фамилия" id="sname" @bind="secondName" required />
+                <div class="valid-feedback" @key="svalid=true">
+                    Отлично!
+                    @svalid
+                </div>
+                <div class="invalid-feedback" @key="svalid=false">
+                    Заполните поле!
+                    @svalid
+                </div>
+            </div>
+            <div class="col-3 custom-control">
+                <label for="ename">Email</label>
+                <input class="form-control" type="email" placeholder="Email" id="ename" pattern=".+.com" @bind="email" required />
+                <div class="valid-feedback" @key="evalid=true">
+                    Отлично!
+                    @evalid
+                </div>
+                <div class="invalid-feedback" @key="evalid=false">
+                    Заполните поле!
+                    @evalid
+                </div>
+            </div>
+            <div class="col-3">
+                <label for="pname">Пароль</label>
+                <input class="form-control" type="password" placeholder="Password" pattern="[A-Za-z-0-9]{6,}" id="pname" @bind="pmail" required />
+                <div class="valid-feedback" @key="pvalid=true">
+                    Отлично!
+                    @pvalid
+                </div>
+                <div class="invalid-feedback" @key="pvalid=false">
+                    Заполните поле!
+                    @pvalid
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <h5>Фамилия</h5>
-            <input class="form-control" placeholder="Фамилия" @bind="secondName"/>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
+            </div>
         </div>
-        <div class="col-4">
-            <h5>Email</h5>
-            <input class="form-control" type="email" placeholder="Email" @bind="email"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
-        </div>
-    </div>
+    </form>
     <div class="row">
         <div class="col">
             <h3>Test</h3>
@@ -34,23 +73,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in personLists)
+                    @foreach (Person item in context.Persons)
                     {
 
-                    <tr>
-                        <td>
-                            @item.ID
-                        </td>
-                        <td>
-                            @item.FirstName
-                        </td>
-                        <td>
-                            @item.SecondName
-                        </td>
-                        <td>
-                            @item.Email
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @item.ID
+                            </td>
+                            <td>
+                                @item.FirstName
+                            </td>
+                            <td>
+                                @item.SecondName
+                            </td>
+                        </tr>
 
                     }
                 </tbody>
@@ -60,20 +96,32 @@
 </div>
 
 @code {
-    private IList<Person> personLists = new List<Person>();
+    public MySqlDbContext context = new MySqlDbContext();
     private string firstName;
     private string secondName;
     private string email;
+    private string pmail;
+    bool fvalid = false;
+    bool svalid = false;
+    bool evalid = false;
+    bool pvalid = false;
 
     private void AddPerson()
     {
-        if(!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email))
+        if ( fvalid && svalid && evalid && pvalid)
         {
-            personLists.Add(new Person { FirstName = firstName, SecondName = secondName, Email = email });
-            firstName = string.Empty;
+            Person person = new Person
+            {
+                FirstName = firstName,
+                SecondName = secondName,
+                Email = email,
+                Password = pmail
+            };
+            context.Persons.Add(person);
+            context.SaveChanges();
+            /*firstName = string.Empty;
             secondName = string.Empty;
-            email = string.Empty;
-            
+            email = string.Empty;*/
         }
     }
 }

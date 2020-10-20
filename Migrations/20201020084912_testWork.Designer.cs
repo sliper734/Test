@@ -33,6 +33,9 @@ namespace Test.Migrations
                     b.Property<string>("SecondName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.HasKey("ID");
 
                     b.ToTable("Persons");
