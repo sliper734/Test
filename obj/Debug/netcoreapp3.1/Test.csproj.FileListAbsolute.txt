@@ -56,6 +56,11 @@ D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Pomelo.EntityFrameworkCore.MyS
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Pomelo.JsonObject.dll
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Test.csproj.CoreCompileInputs.cache
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Test.MvcApplicationPartsAssemblyInfo.cache
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\RazorDeclaration\Test.dll
@@ -68,7 +73,3 @@ D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\MainLayout.razor.
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\NavMenu.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\SurveyPrompt.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\_Imports.razor.g.cs
-D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
-D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
-D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
-D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
