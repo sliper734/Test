@@ -1,56 +1,49 @@
-﻿@page "/personsPage"
+﻿@using System.Text.RegularExpressions;
+@page "/personsPage"
 
 
 <div class="container-fluid">
-    <form class="was-validated">
-        <div class="row">
+    
+        <div class="row was-validated">
             <div class="col-3 custom-control">
                 <label for="fname">Имя</label>
                 <input class="form-control" type="text" id="fname" placeholder="Имя" @bind="firstName" required />
-                <div class="valid-feedback" @key="fvalid=true">
+                <div class="valid-feedback">
                     Отлично!
-                    @fvalid
                 </div>
-                <div class="invalid-feedback" @key="fvalid=false">
+                <div class="invalid-feedback">
                     Заполните поле!
-                    @fvalid
                 </div>
 
             </div>
             <div class="col-3 custom-control">
                 <label for="sname">Фамилия</label>
                 <input class="form-control" type="text" placeholder="Фамилия" id="sname" @bind="secondName" required />
-                <div class="valid-feedback" @key="svalid=true">
+                <div class="valid-feedback">
                     Отлично!
-                    @svalid
                 </div>
-                <div class="invalid-feedback" @key="svalid=false">
+                <div class="invalid-feedback">
                     Заполните поле!
-                    @svalid
                 </div>
             </div>
             <div class="col-3 custom-control">
                 <label for="ename">Email</label>
                 <input class="form-control" type="email" placeholder="Email" id="ename" pattern=".+.com" @bind="email" required />
-                <div class="valid-feedback" @key="evalid=true">
+                <div class="valid-feedback">
                     Отлично!
-                    @evalid
                 </div>
-                <div class="invalid-feedback" @key="evalid=false">
+                <div class="invalid-feedback">
                     Заполните поле!
-                    @evalid
                 </div>
             </div>
             <div class="col-3">
                 <label for="pname">Пароль</label>
                 <input class="form-control" type="password" placeholder="Password" pattern="[A-Za-z-0-9]{6,}" id="pname" @bind="pmail" required />
-                <div class="valid-feedback" @key="pvalid=true">
+                <div class="valid-feedback">
                     Отлично!
-                    @pvalid
                 </div>
-                <div class="invalid-feedback" @key="pvalid=false">
+                <div class="invalid-feedback">
                     Заполните поле!
-                    @pvalid
                 </div>
             </div>
         </div>
@@ -59,7 +52,7 @@
                 <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
             </div>
         </div>
-    </form>
+ 
     <div class="row">
         <div class="col">
             <h3>Test</h3>
@@ -69,25 +62,22 @@
                         <th scope="col">ID</th>
                         <th scope="col">Имя</th>
                         <th scope="col">Фамилия</th>
-                        <th scope="col">Email</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (Person item in context.Persons)
                     {
-
-                        <tr>
-                            <td>
-                                @item.ID
-                            </td>
-                            <td>
-                                @item.FirstName
-                            </td>
-                            <td>
-                                @item.SecondName
-                            </td>
-                        </tr>
-
+                    <tr>
+                        <td>
+                            @item.ID
+                        </td>
+                        <td>
+                            @item.FirstName
+                        </td>
+                        <td>
+                            @item.SecondName
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -101,27 +91,36 @@
     private string secondName;
     private string email;
     private string pmail;
-    bool fvalid = false;
-    bool svalid = false;
-    bool evalid = false;
-    bool pvalid = false;
+
+    private bool IsValidEmail(string emaill)
+    {
+        string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return regex.IsMatch(emaill);
+    }
+
+    
 
     private void AddPerson()
     {
-        if ( fvalid && svalid && evalid && pvalid)
+        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
         {
-            Person person = new Person
+            if (pmail.Length>=6 && IsValidEmail(email))
             {
-                FirstName = firstName,
-                SecondName = secondName,
-                Email = email,
-                Password = pmail
-            };
-            context.Persons.Add(person);
-            context.SaveChanges();
-            /*firstName = string.Empty;
-            secondName = string.Empty;
-            email = string.Empty;*/
+                Person person = new Person
+                {
+                    FirstName = firstName,
+                    SecondName = secondName,
+                    Email = email,
+                    Password = pmail
+                };
+                context.Persons.Add(person);
+                context.SaveChanges();
+                /*firstName = string.Empty;
+                secondName = string.Empty;
+                email = string.Empty;*/
+            }
+
         }
     }
 }
