@@ -1,0 +1,99 @@
+﻿@using System.Text.RegularExpressions;
+@page "/personsPage/{profilmyvalue}"
+
+<h3>Профиль пользователя</h3>
+<div class="container-fluid was-validated">
+    <div class="row" style="margin-top:10px">
+        <div class="col-4">
+            <label for="fname">Имя</label>
+            <input class="form-control" type="text" id="fname" @bind="firstName" required />
+            <div class="invalid-feedback">
+                Заполните поле!
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <div class="col-4">
+            <label for="sname">Фамилия</label>
+            <input class="form-control" type="text" id="sname" @bind="secondName" required />
+            <div class="invalid-feedback">
+                Заполните поле!
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <div class="col-4">
+            <label for="ename">Email</label>
+            <input class="form-control" id="ename" type="email" pattern=".+.com" @bind="email" required />
+            <div class="invalid-feedback">
+                Заполните поле верно!
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <div class="col-4">
+            <label for="pname">Пароль</label>
+            <input class="form-control" id="pname" type="password" pattern="[A-Za-z-0-9]{6,}" @bind="pmail" required />
+            <div class="invalid-feedback">
+                Заполните поле верно!
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+        <div class="col">
+            <button class="btn btn-secondary" @onclick="saveChanges">Сохранить изменения</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private MySqlDbContext context = new MySqlDbContext();
+
+    [Parameter]
+    public string profilmyvalue { get; set; }
+
+    private string firstName;
+    private string secondName;
+    private string email;
+    private string pmail;
+
+    protected override void OnInitialized()
+    {
+        defaultInput();
+        base.OnInitialized();
+    }
+
+    private void defaultInput()
+    {
+        firstName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).FirstName;
+        secondName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).SecondName;
+        email = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Email;
+        pmail = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Password;
+    }
+
+    private bool IsValidEmail(string emaill)
+    {
+        string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return regex.IsMatch(emaill);
+    }
+
+    private void saveChanges()
+    {
+        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
+        {
+            if (pmail.Length >= 6 && IsValidEmail(email))
+            {
+                var person = context.Persons.Find(Convert.ToInt32(profilmyvalue));
+
+                person.FirstName = firstName;
+                person.SecondName = secondName;
+                person.Email = email;
+                person.Password = pmail;
+
+                context.SaveChanges();
+            }
+        }
+    }
+
+}

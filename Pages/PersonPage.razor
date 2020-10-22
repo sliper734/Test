@@ -1,61 +1,60 @@
 ﻿@using System.Text.RegularExpressions;
 @page "/personsPage"
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 
 <div class="container-fluid">
-    
-        <div class="row was-validated">
-            <div class="col-3 custom-control">
-                <label for="fname">Имя</label>
-                <input class="form-control" type="text" id="fname" placeholder="Имя" @bind="firstName" required />
-                <div class="valid-feedback">
-                    Отлично!
-                </div>
-                <div class="invalid-feedback">
-                    Заполните поле!
-                </div>
+    <div class="row was-validated">
+        <div class="col-3 custom-control">
+            <label for="fname">Имя</label>
+            <input class="form-control" type="text" id="fname" placeholder="Имя" @bind="firstName" required />
+            <div class="valid-feedback">
+                Отлично!
+            </div>
+            <div class="invalid-feedback">
+                Заполните поле!
+            </div>
 
+        </div>
+        <div class="col-3 custom-control">
+            <label for="sname">Фамилия</label>
+            <input class="form-control" type="text" placeholder="Фамилия" id="sname" @bind="secondName" required />
+            <div class="valid-feedback">
+                Отлично!
             </div>
-            <div class="col-3 custom-control">
-                <label for="sname">Фамилия</label>
-                <input class="form-control" type="text" placeholder="Фамилия" id="sname" @bind="secondName" required />
-                <div class="valid-feedback">
-                    Отлично!
-                </div>
-                <div class="invalid-feedback">
-                    Заполните поле!
-                </div>
-            </div>
-            <div class="col-3 custom-control">
-                <label for="ename">Email</label>
-                <input class="form-control" type="email" placeholder="Email" id="ename" pattern=".+.com" @bind="email" required />
-                <div class="valid-feedback">
-                    Отлично!
-                </div>
-                <div class="invalid-feedback">
-                    Заполните поле!
-                </div>
-            </div>
-            <div class="col-3">
-                <label for="pname">Пароль</label>
-                <input class="form-control" type="password" placeholder="Password" pattern="[A-Za-z-0-9]{6,}" id="pname" @bind="pmail" required />
-                <div class="valid-feedback">
-                    Отлично!
-                </div>
-                <div class="invalid-feedback">
-                    Заполните поле!
-                </div>
+            <div class="invalid-feedback">
+                Заполните поле!
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
+        <div class="col-3 custom-control">
+            <label for="ename">Email</label>
+            <input class="form-control" type="email" placeholder="Email" id="ename" pattern=".+.com" @bind="email" required />
+            <div class="valid-feedback">
+                Отлично!
+            </div>
+            <div class="invalid-feedback">
+                Заполните поле!
             </div>
         </div>
- 
+        <div class="col-3">
+            <label for="pname">Пароль</label>
+            <input class="form-control" type="password" placeholder="Password" pattern="[A-Za-z-0-9]{6,}" id="pname" @bind="pmail" required />
+            <div class="valid-feedback">
+                Отлично!
+            </div>
+            <div class="invalid-feedback">
+                Заполните поле!
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
-            <h3>Test</h3>
+            <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
             <table class="table table-striped">
                 <thead class="table-dark">
                     <tr>
@@ -67,17 +66,17 @@
                 <tbody>
                     @foreach (Person item in context.Persons)
                     {
-                    <tr>
-                        <td>
-                            @item.ID
-                        </td>
-                        <td>
-                            @item.FirstName
-                        </td>
-                        <td>
-                            @item.SecondName
-                        </td>
-                    </tr>
+                        <tr @onclick="(()=>Href(item.ID))">
+                            <td>
+                                @item.ID
+                            </td>
+                            <td>
+                                @item.FirstName
+                            </td>
+                            <td>
+                                @item.SecondName
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -86,7 +85,7 @@
 </div>
 
 @code {
-    public MySqlDbContext context = new MySqlDbContext();
+    private MySqlDbContext context = new MySqlDbContext();
     private string firstName;
     private string secondName;
     private string email;
@@ -99,13 +98,16 @@
         return regex.IsMatch(emaill);
     }
 
-    
+    private void Href(int profilid)
+    {
+        navigationManager.NavigateTo($"/personsPage/{profilid}");
+    }
 
     private void AddPerson()
     {
         if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
         {
-            if (pmail.Length>=6 && IsValidEmail(email))
+            if (pmail.Length >= 6 && IsValidEmail(email))
             {
                 Person person = new Person
                 {
