@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -14,5 +15,7 @@ namespace Test.Models
         public string SecondName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string NameImg { get; set; }
+        public string PathImg { get; set; }
     }
 }

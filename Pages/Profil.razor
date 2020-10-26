@@ -1,8 +1,23 @@
 ﻿@using System.Text.RegularExpressions;
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using System.Linq
+@using System.Threading
+@using Microsoft.AspNetCore.Http;
+@using BlazorInputFile;
 @page "/personsPage/{profilmyvalue}"
 
-<h3>Профиль пользователя</h3>
+
 <div class="container-fluid was-validated">
+    <h3>Профиль пользователя</h3>
+    <div class="row">
+        <div class="col-2">
+            <img src="@pimg" alt="Аватарка пользователя" class="img-thumbnail" />
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px; margin-left:1px">
+        <InputFile OnChange="HandleSelection" />
+    </div>
     <div class="row" style="margin-top:10px">
         <div class="col-4">
             <label for="fname">Имя</label>
@@ -56,6 +71,7 @@
     private string secondName;
     private string email;
     private string pmail;
+    private string pimg;
 
     protected override void OnInitialized()
     {
@@ -69,6 +85,11 @@
         secondName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).SecondName;
         email = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Email;
         pmail = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Password;
+        if (!string.IsNullOrWhiteSpace(context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg))
+        {
+            pimg = context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg;
+        }
+
     }
 
     private bool IsValidEmail(string emaill)
@@ -76,6 +97,29 @@
         string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         return regex.IsMatch(emaill);
+    }
+
+    private void imgg(string fileName)
+    {
+
+        pimg = "/img/" + fileName;
+        context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg = pimg;
+        context.SaveChanges();
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var filepath = "wwwroot\\img\\" + file.Name;
+            using (var stream = System.IO.File.Create(filepath))
+            {
+
+                await file.Data.CopyToAsync(stream);
+            }
+            imgg(file.Name);
+        }
     }
 
     private void saveChanges()

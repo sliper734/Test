@@ -16,7 +16,9 @@ namespace Test.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     SecondName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
+                    Password = table.Column<string>(nullable: true),
+                    NameImg = table.Column<string>(nullable: true),
+                    PathImg = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -61,6 +61,9 @@ D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
 D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Profil.razor.g.cs
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\Test.StaticWebAssets.xml
+D:\Работа\Test\Test\bin\Debug\netcoreapp3.1\BlazorInputFile.dll
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Test.csproj.CoreCompileInputs.cache
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Test.MvcApplicationPartsAssemblyInfo.cache
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\RazorDeclaration\Test.dll
@@ -69,9 +72,8 @@ D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\Counter.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\FetchData.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\Index.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\PersonPage.razor.g.cs
+D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\Profil.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\MainLayout.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\NavMenu.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Shared\SurveyPrompt.razor.g.cs
 D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\_Imports.razor.g.cs
-D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Profil.razor.g.cs
-D:\Работа\Test\Test\obj\Debug\netcoreapp3.1\Razor\Pages\Profil.razor.g.cs
