@@ -85,12 +85,14 @@
 </div>
 
 @code {
-    private MySqlDbContext context = new MySqlDbContext();
+    private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
+    //забинденные переменные
     private string firstName;
     private string secondName;
     private string email;
     private string pmail;
 
+    //валидация эмайла
     private bool IsValidEmail(string emaill)
     {
         string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
@@ -98,11 +100,13 @@
         return regex.IsMatch(emaill);
     }
 
+    
     private void Href(int profilid)
     {
         navigationManager.NavigateTo($"/personsPage/{profilid}");
     }
 
+    //добавление записи в бд с "условной валидацией" (надо будет переделать на менее костыльный)
     private void AddPerson()
     {
         if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
@@ -118,11 +122,7 @@
                 };
                 context.Persons.Add(person);
                 context.SaveChanges();
-                /*firstName = string.Empty;
-                secondName = string.Empty;
-                email = string.Empty;*/
             }
-
         }
     }
 }

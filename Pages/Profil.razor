@@ -1,9 +1,5 @@
 ﻿@using System.Text.RegularExpressions;
-@using System.ComponentModel.DataAnnotations
-@using System.IO
-@using System.Linq
-@using System.Threading
-@using Microsoft.AspNetCore.Http;
+@using System.Linq;
 @using BlazorInputFile;
 @page "/personsPage/{profilmyvalue}"
 
@@ -62,23 +58,26 @@
 </div>
 
 @code {
-    private MySqlDbContext context = new MySqlDbContext();
+    private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
 
     [Parameter]
     public string profilmyvalue { get; set; }
 
+    //забинденные переменные
     private string firstName;
     private string secondName;
     private string email;
     private string pmail;
     private string pimg;
 
+    //Здесь вызывается метод defaultInput (сделал так чтобы метод вызывался только при 1 прорисовки страницы, а не при каждом щелчке на поле или мимо поля)
     protected override void OnInitialized()
     {
         defaultInput();
         base.OnInitialized();
     }
 
+    //Вывод данных из бд по Id = profilmyvalue
     private void defaultInput()
     {
         firstName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).FirstName;
@@ -92,6 +91,7 @@
 
     }
 
+    //валидация эмайла
     private bool IsValidEmail(string emaill)
     {
         string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
@@ -99,6 +99,7 @@
         return regex.IsMatch(emaill);
     }
 
+    //запись в бд названия аватарки
     private void imgg(string fileName)
     {
 
@@ -107,6 +108,7 @@
         context.SaveChanges();
     }
 
+    //Копирование файла в нашу файловую систему и вызов метода imgg
     async Task HandleSelection(IFileListEntry[] files)
     {
         var file = files.FirstOrDefault();
@@ -122,6 +124,7 @@
         }
     }
 
+    //сохранение изменений записи в бд с "условной валидацией" (надо будет переделать на менее костыльный)
     private void saveChanges()
     {
         if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
@@ -139,5 +142,4 @@
             }
         }
     }
-
 }
