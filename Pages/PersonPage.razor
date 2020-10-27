@@ -4,54 +4,34 @@
 
 
 <div class="container-fluid">
-    <div class="row was-validated">
-        <div class="col-3 custom-control">
-            <label for="fname">Имя</label>
-            <input class="form-control" type="text" id="fname" placeholder="Имя" @bind="firstName" required />
-            <div class="valid-feedback">
-                Отлично!
-            </div>
-            <div class="invalid-feedback">
-                Заполните поле!
-            </div>
+    <EditForm Model="@validModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-        </div>
-        <div class="col-3 custom-control">
-            <label for="sname">Фамилия</label>
-            <input class="form-control" type="text" placeholder="Фамилия" id="sname" @bind="secondName" required />
-            <div class="valid-feedback">
-                Отлично!
+        <div class="row">
+            <div class="col-3">
+                <label for="fname">Имя</label>
+                <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
             </div>
-            <div class="invalid-feedback">
-                Заполните поле!
+            <div class="col-3">
+                <label for="sname">Фамилия</label>
+                <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
             </div>
-        </div>
-        <div class="col-3 custom-control">
-            <label for="ename">Email</label>
-            <input class="form-control" type="email" placeholder="Email" id="ename" pattern=".+.com" @bind="email" required />
-            <div class="valid-feedback">
-                Отлично!
+            <div class="col-3">
+                <label for="ename">Email</label>
+                <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
             </div>
-            <div class="invalid-feedback">
-                Заполните поле!
+            <div class="col-3">
+                <label for="pname">Пароль</label>
+                <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
             </div>
         </div>
-        <div class="col-3">
-            <label for="pname">Пароль</label>
-            <input class="form-control" type="password" placeholder="Password" pattern="[A-Za-z-0-9]{6,}" id="pname" @bind="pmail" required />
-            <div class="valid-feedback">
-                Отлично!
-            </div>
-            <div class="invalid-feedback">
-                Заполните поле!
+        <div class="row" style="margin-top:10px;margin-bottom:10px">
+            <div class="col">
+                <button class="btn btn-secondary" type="submit">Добавить</button>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <button class="btn btn-secondary" @onclick="AddPerson">Добавить</button>
-        </div>
-    </div>
+    </EditForm>
 
     <div class="row">
         <div class="col">
@@ -86,43 +66,25 @@
 
 @code {
     private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
-    //забинденные переменные
-    private string firstName;
-    private string secondName;
-    private string email;
-    private string pmail;
+    
+    private ValidModel validModel = new ValidModel();
 
-    //валидация эмайла
-    private bool IsValidEmail(string emaill)
+    private void HandleValidSubmit()
     {
-        string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
-        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
-        return regex.IsMatch(emaill);
+        Person person = new Person
+        {
+            FirstName = validModel.FirstName,
+            SecondName = validModel.SecondName,
+            Email = validModel.Email,
+            Password = validModel.Password
+        };
+        context.Persons.Add(person);
+        context.SaveChanges();
     }
 
-    
     private void Href(int profilid)
     {
         navigationManager.NavigateTo($"/personsPage/{profilid}");
     }
 
-    //добавление записи в бд с "условной валидацией" (надо будет переделать на менее костыльный)
-    private void AddPerson()
-    {
-        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
-        {
-            if (pmail.Length >= 6 && IsValidEmail(email))
-            {
-                Person person = new Person
-                {
-                    FirstName = firstName,
-                    SecondName = secondName,
-                    Email = email,
-                    Password = pmail
-                };
-                context.Persons.Add(person);
-                context.SaveChanges();
-            }
-        }
-    }
 }

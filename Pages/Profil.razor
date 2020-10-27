@@ -11,63 +11,54 @@
             <img src="@pimg" alt="Аватарка пользователя" class="img-thumbnail" />
         </div>
     </div>
-    <div class="row" style="margin-top:10px; margin-left:1px">
-        <InputFile OnChange="HandleSelection" />
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="col-4">
-            <label for="fname">Имя</label>
-            <input class="form-control" type="text" id="fname" @bind="firstName" required />
-            <div class="invalid-feedback">
-                Заполните поле!
+    <EditForm Model="@validModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row" style="margin-top:10px; margin-left:1px">
+            <InputFile OnChange="HandleSelection" />
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col-4">
+                <label for="fname">Имя</label>
+                <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
             </div>
         </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="col-4">
-            <label for="sname">Фамилия</label>
-            <input class="form-control" type="text" id="sname" @bind="secondName" required />
-            <div class="invalid-feedback">
-                Заполните поле!
+        <div class="row" style="margin-top:10px">
+            <div class="col-4">
+                <label for="sname">Фамилия</label>
+                <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
             </div>
         </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="col-4">
-            <label for="ename">Email</label>
-            <input class="form-control" id="ename" type="email" pattern=".+.com" @bind="email" required />
-            <div class="invalid-feedback">
-                Заполните поле верно!
+        <div class="row" style="margin-top:10px">
+            <div class="col-4">
+                <label for="ename">Email</label>
+                <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
             </div>
         </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="col-4">
-            <label for="pname">Пароль</label>
-            <input class="form-control" id="pname" type="password" pattern="[A-Za-z-0-9]{6,}" @bind="pmail" required />
-            <div class="invalid-feedback">
-                Заполните поле верно!
+        <div class="row" style="margin-top:10px">
+            <div class="col-4">
+                <label for="pname">Пароль</label>
+                <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
             </div>
         </div>
-    </div>
-    <div class="row" style="margin-top:10px">
-        <div class="col">
-            <button class="btn btn-secondary" @onclick="saveChanges">Сохранить изменения</button>
+        <div class="row" style="margin-top:10px">
+            <div class="col">
+                <button class="btn btn-secondary" type="submit">Сохранить изменения</button>
+            </div>
+
         </div>
-    </div>
+    </EditForm>
 </div>
 
 @code {
+    private ValidModel validModel = new ValidModel();//создание экземпляра модели валидации
+
     private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
 
     [Parameter]
     public string profilmyvalue { get; set; }
 
     //забинденные переменные
-    private string firstName;
-    private string secondName;
-    private string email;
-    private string pmail;
     private string pimg;
 
     //Здесь вызывается метод defaultInput (сделал так чтобы метод вызывался только при 1 прорисовки страницы, а не при каждом щелчке на поле или мимо поля)
@@ -80,32 +71,14 @@
     //Вывод данных из бд по Id = profilmyvalue
     private void defaultInput()
     {
-        firstName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).FirstName;
-        secondName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).SecondName;
-        email = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Email;
-        pmail = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Password;
+        validModel.FirstName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).FirstName;
+        validModel.SecondName = context.Persons.Find(Convert.ToInt32(profilmyvalue)).SecondName;
+        validModel.Email = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Email;
+        validModel.Password = context.Persons.Find(Convert.ToInt32(profilmyvalue)).Password;
         if (!string.IsNullOrWhiteSpace(context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg))
         {
             pimg = context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg;
         }
-
-    }
-
-    //валидация эмайла
-    private bool IsValidEmail(string emaill)
-    {
-        string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
-        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
-        return regex.IsMatch(emaill);
-    }
-
-    //запись в бд названия аватарки
-    private void imgg(string fileName)
-    {
-
-        pimg = "/img/" + fileName;
-        context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg = pimg;
-        context.SaveChanges();
     }
 
     //Копирование файла в нашу файловую систему и вызов метода imgg
@@ -120,26 +93,23 @@
 
                 await file.Data.CopyToAsync(stream);
             }
-            imgg(file.Name);
+            pimg = "/img/" + file.Name;
+            context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg = pimg;
+            context.SaveChanges();
         }
     }
 
-    //сохранение изменений записи в бд с "условной валидацией" (надо будет переделать на менее костыльный)
-    private void saveChanges()
+    //Сохранение изменений в бд при успешной валидации
+    private void HandleValidSubmit()
     {
-        if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName) && !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(pmail))
-        {
-            if (pmail.Length >= 6 && IsValidEmail(email))
-            {
-                var person = context.Persons.Find(Convert.ToInt32(profilmyvalue));
+        var person = context.Persons.Find(Convert.ToInt32(profilmyvalue));
 
-                person.FirstName = firstName;
-                person.SecondName = secondName;
-                person.Email = email;
-                person.Password = pmail;
+        person.FirstName = validModel.FirstName;
+        person.SecondName = validModel.SecondName;
+        person.Email = validModel.Email;
+        person.Password = validModel.Password;
 
-                context.SaveChanges();
-            }
-        }
+        context.SaveChanges();
     }
+
 }
