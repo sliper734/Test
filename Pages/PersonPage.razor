@@ -1,5 +1,5 @@
 ﻿@using System.Text.RegularExpressions;
-@page "/personsPage"
+@page "/"
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 
@@ -84,7 +84,7 @@
 
     private void Href(int profilid)
     {
-        navigationManager.NavigateTo($"/personsPage/{profilid}");
+        navigationManager.NavigateTo($"/{profilid}");
     }
 
 }
