@@ -3,70 +3,77 @@
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 
+
 <div class="container-fluid">
-    <EditForm Model="@validModel" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+    <AuthorizeView Context="authContext" Roles="Admistrator">
+        <Authorized>
+            <EditForm Context="editContext" Model="@validModel" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-        <div class="row">
-            <div class="col-3">
-                <label for="fname">Имя</label>
-                <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
+                <div class="row">
+                    <div class="col-3">
+                        <label for="fname">Имя</label>
+                        <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
+                    </div>
+                    <div class="col-3">
+                        <label for="sname">Фамилия</label>
+                        <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
+                    </div>
+                    <div class="col-3">
+                        <label for="ename">Email</label>
+                        <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
+                    </div>
+                    <div class="col-3">
+                        <label for="pname">Пароль</label>
+                        <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;margin-bottom:10px">
+                    <div class="col">
+                        <button class="btn btn-secondary" type="submit">Добавить</button>
+                    </div>
+                </div>
+            </EditForm>
+            <div class="row">
+                <div class="col">
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Имя</th>
+                                <th scope="col">Фамилия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Person item in dbcontext.Persons)
+                            {
+                                <tr @onclick="(()=>Href(item.ID))">
+                                    <td>
+                                        @item.ID
+                                    </td>
+                                    <td>
+                                        @item.FirstName
+                                    </td>
+                                    <td>
+                                        @item.SecondName
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-3">
-                <label for="sname">Фамилия</label>
-                <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
-            </div>
-            <div class="col-3">
-                <label for="ename">Email</label>
-                <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
-            </div>
-            <div class="col-3">
-                <label for="pname">Пароль</label>
-                <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
-            </div>
-        </div>
-        <div class="row" style="margin-top:10px;margin-bottom:10px">
-            <div class="col">
-                <button class="btn btn-secondary" type="submit">Добавить</button>
-            </div>
-        </div>
-    </EditForm>
-
-    <div class="row">
-        <div class="col">
-            <table class="table table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Имя</th>
-                        <th scope="col">Фамилия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Person item in context.Persons)
-                    {
-                        <tr @onclick="(()=>Href(item.ID))">
-                            <td>
-                                @item.ID
-                            </td>
-                            <td>
-                                @item.FirstName
-                            </td>
-                            <td>
-                                @item.SecondName
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+        </Authorized>
+        <NotAuthorized>
+            <h1>Авторизируйтесь!</h1>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 @code {
-    private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
-    
+    private MySqlDbContext dbcontext = new MySqlDbContext();//создание экзеипляра контекста
+
     private ValidModel validModel = new ValidModel();
 
     private void HandleValidSubmit()
@@ -78,13 +85,13 @@
             Email = validModel.Email,
             Password = validModel.Password
         };
-        context.Persons.Add(person);
-        context.SaveChanges();
+        dbcontext.Persons.Add(person);
+        dbcontext.SaveChanges();
     }
 
     private void Href(int profilid)
     {
-        navigationManager.NavigateTo($"Home/Profil/{profilid}");
+        navigationManager.NavigateTo($"Profil/{profilid}");
     }
 
 }

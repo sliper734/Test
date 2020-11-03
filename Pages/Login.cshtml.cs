@@ -14,8 +14,7 @@ namespace Test.Pages
     public class LoginModel : PageModel
     {
         public string ReturnUrl { get; set; }
-        public async Task<IActionResult>
-            OnGetAsync(string paramUsername, string paramPassword)
+        public async Task<IActionResult> OnGetAsync(string paramUsername, string paramPassword)
         {
             string returnUrl = Url.Content("~/");
             try
@@ -32,7 +31,7 @@ namespace Test.Pages
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, paramUsername),
-                new Claim(ClaimTypes.Role, "Administrator"),
+                new Claim(ClaimTypes.Role, "User"),
             };
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
