@@ -5,7 +5,7 @@
 
 
 <div class="container-fluid">
-    <AuthorizeView Context="authContext" Roles="Admistrator">
+    <AuthorizeView Context="authContext" >
         <Authorized>
             <EditForm Context="editContext" Model="@validModel" OnValidSubmit="@HandleValidSubmit">
                 <DataAnnotationsValidator />
@@ -83,7 +83,8 @@
             FirstName = validModel.FirstName,
             SecondName = validModel.SecondName,
             Email = validModel.Email,
-            Password = validModel.Password
+            Password = validModel.Password,
+            RoleID=1
         };
         dbcontext.Persons.Add(person);
         dbcontext.SaveChanges();

@@ -19,6 +19,7 @@ namespace Test
         {
             using (var context = new MySqlDbContext())
             {
+                //context.Database.EnsureCreated();
                 context.Database.Migrate();
             }
             CreateHostBuilder(args).Build().Run();

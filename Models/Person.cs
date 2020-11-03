@@ -27,7 +27,8 @@ namespace Test.Models
         [Required(ErrorMessage = "Поле 'Пароль' не заполнено!")]
         [StringLength(50, ErrorMessage = "Пароль должен быть длиной от 6 до 50 символов!", MinimumLength = 6)]
         public string Password { get; set; }
-        public string NameImg { get; set; }
         public string PathImg { get; set; }
+        public int RoleID { get; set;  }
+        public Role Role { get; set; }
     }
 }
