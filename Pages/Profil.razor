@@ -2,6 +2,7 @@
 @using System.Linq;
 @using BlazorInputFile;
 @page "/Profil/{profilmyvalue}"
+@inject MySqlDbContext context
 
 
 <div class="container-fluid was-validated">
@@ -60,8 +61,6 @@
 
 @code {
     private ValidModel validModel = new ValidModel();//создание экземпляра модели валидации
-
-    private MySqlDbContext context = new MySqlDbContext();//создание экзеипляра контекста
 
     [Parameter]
     public string profilmyvalue { get; set; }

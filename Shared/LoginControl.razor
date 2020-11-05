@@ -1,23 +1,44 @@
 ﻿@page "/loginControl"
 @using System.Web;
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+
 <AuthorizeView>
+
     <Authorized>
         <b>Hello, @context.User.Identity.Name!</b>
         <a class="ml-md-auto btn btn-primary" href="/logout?returnUrl=/" target="_top">Logout</a>
     </Authorized>
+
     <NotAuthorized>
-        <input type="text" placeholder="User Name" @bind="@Username" />
-        &nbsp;&nbsp;
-        <input type="password" placeholder="Password" @bind="@Password" />
-        <a class="ml-md-auto btn btn-primary" href="/login?paramUsername=@encode(@Username)&paramPassword=@encode(@Password)" target="_top">Login</a>
+        <div class="container-fluid">
+            <EditForm Context="editContext" Model="@loginModel" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-5">
+                        <ValidationSummary />
+                    </div>
+                    <div class="col-7">
+                        <input type="text" placeholder="Email" @bind="@loginModel.Email" />
+                        <input type="password" placeholder="Password" @bind="@loginModel.Password" />
+                        <button class="btn btn-primary" type="submit">Login</button>
+                        <a class="btn btn-primary" href="/Register" target="_top">Регистрация</a>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
     </NotAuthorized>
+
 </AuthorizeView>
 
 @code {
-    string Username = "";
-    string Password = "";
+    private LoginModel loginModel = new LoginModel();
     private string encode(string param)
     {
         return HttpUtility.UrlEncode(param);
+    }
+    private void HandleValidSubmit()
+    {
+        string href = $"login?paramUsername={encode(loginModel.Email)}&paramPassword={encode(loginModel.Password)}";
+        navigationManager.NavigateTo(href,true);
     }
 }

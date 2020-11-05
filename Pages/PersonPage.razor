@@ -1,32 +1,48 @@
 ﻿@using System.Text.RegularExpressions;
 @page "/Persons"
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+@inject MySqlDbContext dbcontext
 
 
 
 <div class="container-fluid">
-    <AuthorizeView Context="authContext" >
+    <AuthorizeView Context="authContext" Roles="admin">
         <Authorized>
             <EditForm Context="editContext" Model="@validModel" OnValidSubmit="@HandleValidSubmit">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-
                 <div class="row">
                     <div class="col-3">
-                        <label for="fname">Имя</label>
-                        <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
+                        <div class="row">
+                            <label for="fname">Имя</label>
+                        </div>
+                        <div class="row">
+                            <InputText id="fname" placeholder="Имя" @bind-Value="validModel.FirstName" />
+                        </div>
                     </div>
                     <div class="col-3">
-                        <label for="sname">Фамилия</label>
-                        <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
+                        <div class="row">
+                            <label for="sname">Фамилия</label>
+                        </div>
+                        <div class="row">
+                            <InputText placeholder="Фамилия" id="sname" @bind-Value="validModel.SecondName" />
+                        </div>
                     </div>
                     <div class="col-3">
-                        <label for="ename">Email</label>
-                        <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
+                        <div class="row">
+                            <label for="ename">Email</label>
+                        </div>
+                        <div class="row">
+                            <InputText placeholder="Email" id="ename" @bind-Value="validModel.Email" />
+                        </div>
                     </div>
                     <div class="col-3">
-                        <label for="pname">Пароль</label>
-                        <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
+                        <div class="row">
+                            <label for="pname">Пароль</label>
+                        </div>
+                        <div class="row">
+                            <InputText type="password" placeholder="Password" id="pname" @bind-Value="validModel.Password" />
+                        </div>
                     </div>
                 </div>
                 <div class="row" style="margin-top:10px;margin-bottom:10px">
@@ -66,13 +82,12 @@
             </div>
         </Authorized>
         <NotAuthorized>
-            <h1>Авторизируйтесь!</h1>
+            <h1>Увас недостаточно прав для просмотра данной страницы!</h1>
         </NotAuthorized>
     </AuthorizeView>
 </div>
 
 @code {
-    private MySqlDbContext dbcontext = new MySqlDbContext();//создание экзеипляра контекста
 
     private ValidModel validModel = new ValidModel();
 

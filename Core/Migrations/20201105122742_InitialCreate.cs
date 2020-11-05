@@ -31,7 +31,7 @@ namespace Test.Migrations
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(maxLength: 50, nullable: false),
                     PathImg = table.Column<string>(nullable: true),
-                    RoleID = table.Column<int>(nullable: false)
+                    RoleID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -41,8 +41,23 @@ namespace Test.Migrations
                         column: x => x.RoleID,
                         principalTable: "Roles",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "ID", "RoleName" },
+                values: new object[] { 1, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "ID", "RoleName" },
+                values: new object[] { 2, "user" });
+
+            migrationBuilder.InsertData(
+                table: "Persons",
+                columns: new[] { "ID", "Email", "FirstName", "Password", "PathImg", "RoleID", "SecondName" },
+                values: new object[] { 1, "admin@mail.ru", "admin", "123456", null, 1, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Persons_RoleID",

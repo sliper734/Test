@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Test.HelpClasses
 {
-    public class CustomHttpClient: HttpClient
+    public class CustomHttpClient : HttpClient
     {
         public async Task<T> GetJsonAsync<T>(string requestUri)
         {

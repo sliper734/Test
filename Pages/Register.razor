@@ -1,0 +1,63 @@
+﻿@page "/Register"
+@inject MySqlDbContext dbcontext
+
+<EditForm Context="editContext" Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-2">
+            <label for="fname">Имя</label>
+            <InputText id="fname" placeholder="Имя" @bind-Value="registerModel.FirstName" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <label for="sname">Фамилия</label>
+            <InputText placeholder="Фамилия" id="sname" @bind-Value="registerModel.SecondName" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <label for="ename">Email</label>
+            <InputText placeholder="Email" id="ename" @bind-Value="registerModel.Email" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <label for="pname">Пароль</label>
+            <InputText type="password" placeholder="Password" id="pname" @bind-Value="registerModel.Password" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <label for="pname">Подтверждение пароля</label>
+            <InputText type="password" placeholder="Confirm password" id="pname" @bind-Value="registerModel.ConfirmPassword" />
+        </div>
+    </div>
+    <div class="row" style="margin-top:10px;margin-bottom:10px">
+        <div class="col">
+            <button class="btn btn-secondary" type="submit">Зарегистрироваться</button>
+        </div>
+    </div>
+    <h2>@register</h2>
+</EditForm>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+    string register = "";
+
+    private void HandleValidSubmit()
+    {
+        Person person = new Person
+        {
+            FirstName = registerModel.FirstName,
+            SecondName = registerModel.SecondName,
+            Email = registerModel.Email,
+            Password = registerModel.Password,
+            RoleID = 2
+        };
+        dbcontext.Persons.Add(person);
+        dbcontext.SaveChanges();
+        register = "Вы зарегистрированы!";
+    }
+}
