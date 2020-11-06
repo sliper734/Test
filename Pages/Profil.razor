@@ -2,7 +2,7 @@
 @using System.Linq;
 @using BlazorInputFile;
 @page "/Profil/{profilmyvalue}"
-@inject MySqlDbContext context
+@inject MySqlDbContext dbcontext
 
 
 <div class="container-fluid was-validated">
@@ -56,10 +56,31 @@
             <h1>Авторизируйтесь!</h1>
         </NotAuthorized>
     </AuthorizeView>
+    <AuthorizeView Roles="admin">
+        <Authorized>
+            <EditForm Context="roleContext" Model="rolee">
+                <div class="row" style="margin-top:10px;">
+                    <label for="roleeSelect">Выберите роль</label>
+                </div>
+                <div class="row" style="margin-bottom:10px">
+                    <InputSelect id="roleeSelect" @bind-Value="role">
+                        @foreach (Role item in dbcontext.Roles)
+                        {
+                            <option>@item.RoleName</option>
+                        }
+                    </InputSelect>
+                </div>
+            </EditForm>
+
+        </Authorized>
+        
+    </AuthorizeView>
     
 </div>
 
 @code {
+    private string role = "";
+    private Role rolee = new Role();
     private ValidModel validModel = new ValidModel();//создание экземпляра модели валидации
 
     [Parameter]
@@ -81,13 +102,13 @@
         int pmv;
         if(Int32.TryParse(profilmyvalue,out pmv))
         {
-            validModel.FirstName = context.Persons.Find(Convert.ToInt32(pmv)).FirstName;
-            validModel.SecondName = context.Persons.Find(Convert.ToInt32(pmv)).SecondName;
-            validModel.Email = context.Persons.Find(Convert.ToInt32(pmv)).Email;
-            validModel.Password = context.Persons.Find(Convert.ToInt32(pmv)).Password;
-            if (!string.IsNullOrWhiteSpace(context.Persons.Find(Convert.ToInt32(pmv)).PathImg))
+            validModel.FirstName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).FirstName;
+            validModel.SecondName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).SecondName;
+            validModel.Email = dbcontext.Persons.Find(Convert.ToInt32(pmv)).Email;
+            validModel.Password = dbcontext.Persons.Find(Convert.ToInt32(pmv)).Password;
+            if (!string.IsNullOrWhiteSpace(dbcontext.Persons.Find(Convert.ToInt32(pmv)).PathImg))
             {
-                pimg = context.Persons.Find(Convert.ToInt32(pmv)).PathImg;
+                pimg = dbcontext.Persons.Find(Convert.ToInt32(pmv)).PathImg;
             }
         }
 
@@ -106,22 +127,22 @@
                 await file.Data.CopyToAsync(stream);
             }
             pimg = "/img/" + file.Name;
-            context.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg = pimg;
-            context.SaveChanges();
+            dbcontext.Persons.Find(Convert.ToInt32(profilmyvalue)).PathImg = pimg;
+            dbcontext.SaveChanges();
         }
     }
 
     //Сохранение изменений в бд при успешной валидации
     private void HandleValidSubmit()
     {
-        var person = context.Persons.Find(Convert.ToInt32(profilmyvalue));
+        var person = dbcontext.Persons.Find(Convert.ToInt32(profilmyvalue));
 
         person.FirstName = validModel.FirstName;
         person.SecondName = validModel.SecondName;
         person.Email = validModel.Email;
         person.Password = validModel.Password;
 
-        context.SaveChanges();
+        dbcontext.SaveChanges();
     }
 
 }

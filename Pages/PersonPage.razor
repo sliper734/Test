@@ -45,6 +45,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" style="margin-top:10px;">
+                    <label for="roleSelect">Выберите роль</label>
+                </div>
+                <div class="row" style="margin-bottom:10px">
+                    <InputSelect id="roleSelect" @bind-Value="role">
+                        @foreach (Role item in dbcontext.Roles)
+                        {
+                            <option>@item.RoleName</option>
+                        }
+                    </InputSelect>
+                </div>
                 <div class="row" style="margin-top:10px;margin-bottom:10px">
                     <div class="col">
                         <button class="btn btn-secondary" type="submit">Добавить</button>
@@ -90,6 +101,7 @@
 @code {
 
     private ValidModel validModel = new ValidModel();
+    private string role = "";
 
     private void HandleValidSubmit()
     {
@@ -99,7 +111,7 @@
             SecondName = validModel.SecondName,
             Email = validModel.Email,
             Password = validModel.Password,
-            RoleID=1
+            RoleID = dbcontext.Roles.FirstOrDefault(u => u.RoleName == role).ID
         };
         dbcontext.Persons.Add(person);
         dbcontext.SaveChanges();
