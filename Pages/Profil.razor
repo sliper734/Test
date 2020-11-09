@@ -3,6 +3,9 @@
 @using BlazorInputFile;
 @page "/Profil/{profilmyvalue}"
 @inject MySqlDbContext dbcontext
+@inject NavigationManager navMan
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
 
 
 <div class="container-fluid was-validated">
@@ -73,9 +76,9 @@
             </EditForm>
 
         </Authorized>
-        
+
     </AuthorizeView>
-    
+
 </div>
 
 @code {
@@ -100,7 +103,7 @@
     private void defaultInput()
     {
         int pmv;
-        if(Int32.TryParse(profilmyvalue,out pmv))
+        if (Int32.TryParse(profilmyvalue, out pmv))
         {
             validModel.FirstName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).FirstName;
             validModel.SecondName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).SecondName;
@@ -110,6 +113,12 @@
             {
                 pimg = dbcontext.Persons.Find(Convert.ToInt32(pmv)).PathImg;
             }
+        }
+        else
+        {
+            string s= httpContextAccessor.HttpContext.User.Identity.Name;
+            int id = dbcontext.Persons.FirstOrDefault(x=>x.Email==s).ID;
+            navMan.NavigateTo($"Profil/{id}", true);
         }
 
     }
