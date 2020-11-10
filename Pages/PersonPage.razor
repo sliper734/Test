@@ -1,9 +1,6 @@
-﻿@using System.Text.RegularExpressions;
-@page "/Persons"
+﻿@page "/Persons"
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 @inject MySqlDbContext dbcontext
-
-
 
 <div class="container-fluid">
     <AuthorizeView Context="authContext" Roles="admin">
@@ -50,7 +47,7 @@
                 </div>
                 <div class="row" style="margin-bottom:10px">
                     <InputSelect id="roleSelect" @bind-Value="role">
-                        @foreach (Role item in dbcontext.Roles)
+                        @foreach (var item in dbcontext.Roles)
                         {
                             <option>@item.RoleName</option>
                         }
@@ -73,7 +70,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (Person item in dbcontext.Persons)
+                            @foreach (var item in dbcontext.Persons)
                             {
                                 <tr @onclick="(()=>Href(item.ID))">
                                     <td>
@@ -93,7 +90,7 @@
             </div>
         </Authorized>
         <NotAuthorized>
-            <h1>Увас недостаточно прав для просмотра данной страницы!</h1>
+            <h1>У вас недостаточно прав для просмотра данной страницы!</h1>
         </NotAuthorized>
     </AuthorizeView>
 </div>
@@ -105,7 +102,7 @@
 
     private void HandleValidSubmit()
     {
-        Person person = new Person
+        var person = new Person
         {
             FirstName = validModel.FirstName,
             SecondName = validModel.SecondName,
@@ -119,7 +116,7 @@
 
     private void Href(int profilid)
     {
-        navigationManager.NavigateTo($"Profil/{profilid}");
+        navigationManager.NavigateTo($"UserProfile/{profilid}");
     }
 
 }

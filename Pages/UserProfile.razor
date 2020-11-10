@@ -1,7 +1,6 @@
-﻿@using System.Text.RegularExpressions;
-@using System.Linq;
+﻿@using System.Linq;
 @using BlazorInputFile;
-@page "/Profil/{profilmyvalue}"
+@page "/UserProfile/{profilmyvalue}"
 @inject MySqlDbContext dbcontext
 @inject NavigationManager navMan
 @using Microsoft.AspNetCore.Http
@@ -67,7 +66,7 @@
                 </div>
                 <div class="row" style="margin-bottom:10px">
                     <InputSelect id="roleeSelect" @bind-Value="role">
-                        @foreach (Role item in dbcontext.Roles)
+                        @foreach (var item in dbcontext.Roles)
                         {
                             <option>@item.RoleName</option>
                         }
@@ -84,27 +83,32 @@
 @code {
     private string role = "";
     private Role rolee = new Role();
-    private ValidModel validModel = new ValidModel();//создание экземпляра модели валидации
+    private ValidModel validModel = new ValidModel();
 
     [Parameter]
     public string profilmyvalue { get; set; }
 
-    //забинденные переменные
     private string pimg;
 
-    //Здесь вызывается метод defaultInput (сделал так чтобы метод вызывался только при 1 прорисовки страницы, а не при каждом щелчке на поле или мимо поля)
     protected override void OnInitialized()
-    {
-        defaultInput();
-        base.OnInitialized();
-    }
-
-    //Вывод данных из бд по Id = profilmyvalue
-    private void defaultInput()
     {
         int pmv;
         if (Int32.TryParse(profilmyvalue, out pmv))
         {
+            defaultInput(pmv);
+        }
+        else if(httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+        {
+            string s = httpContextAccessor.HttpContext.User.Identity.Name;
+            int id = dbcontext.Persons.FirstOrDefault(x => x.Email == s).ID;
+            navMan.NavigateTo($"UserProfile/{id}", true);
+        }
+        base.OnInitialized();
+    }
+
+    //Вывод данных из бд по Id = profilmyvalue
+    private void defaultInput(int pmv)
+    {
             validModel.FirstName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).FirstName;
             validModel.SecondName = dbcontext.Persons.Find(Convert.ToInt32(pmv)).SecondName;
             validModel.Email = dbcontext.Persons.Find(Convert.ToInt32(pmv)).Email;
@@ -113,17 +117,8 @@
             {
                 pimg = dbcontext.Persons.Find(Convert.ToInt32(pmv)).PathImg;
             }
-        }
-        else
-        {
-            string s= httpContextAccessor.HttpContext.User.Identity.Name;
-            int id = dbcontext.Persons.FirstOrDefault(x=>x.Email==s).ID;
-            navMan.NavigateTo($"Profil/{id}", true);
-        }
-
     }
 
-    //Копирование файла в нашу файловую систему и вызов метода imgg
     async Task HandleSelection(IFileListEntry[] files)
     {
         var file = files.FirstOrDefault();
@@ -132,7 +127,6 @@
             var filepath = "wwwroot\\img\\" + file.Name;
             using (var stream = System.IO.File.Create(filepath))
             {
-
                 await file.Data.CopyToAsync(stream);
             }
             pimg = "/img/" + file.Name;
@@ -141,7 +135,6 @@
         }
     }
 
-    //Сохранение изменений в бд при успешной валидации
     private void HandleValidSubmit()
     {
         var person = dbcontext.Persons.Find(Convert.ToInt32(profilmyvalue));
